@@ -16,13 +16,22 @@
  * Adds a random greeting to the page.
  */
 function addRandomGreeting() {
-  const greetings =
-      ['Hello world!', '¡Hola Mundo!', '你好，世界！', 'Bonjour le monde!'];
+    
+  let returnedRepos = [];
 
-  // Pick a random greeting.
-  const greeting = greetings[Math.floor(Math.random() * greetings.length)];
+  fetch('https://api.github.com/users/MohamedShatry/repos')
+  .then(res => res.json())
+  .then(repos => {
+      repos.forEach(repo => {
+          returnedRepos.push({
+              title: repo.name,
+              url: repo.html_url,
+              language: repo.language,
+              description: repo.description
+          });
+      });
+  })
+  .catch(err => console.log(err));
 
-  // Add it to the page.
-  const greetingContainer = document.getElementById('greeting-container');
-  greetingContainer.innerText = greeting;
+  console.log(returnedRepos);
 }
