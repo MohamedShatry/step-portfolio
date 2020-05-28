@@ -12,7 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/*
+	*Dynamically fetch content from github and render it to html
 
+    *Description of functions below:
+        *getData() asyncronously fetched data from github and calls functions to parse, filter and render component\
+        *SetHeader(repo) fetches and returns certain atributres from repo object
+        *SetRepos(repo) fetches and returns certain atributres from repo object
+        *injectHeader(header) dynamically renders the header to the body
+        *injectRepo(repo) creates a new repository elements and injects it into the body
+
+
+ */
 
 async function getData (){
     let response = await fetch('https://api.github.com/users/MohamedShatry/repos');
@@ -49,6 +60,19 @@ function SetRepos(repo){
     return repo_content;
 };
 
+/*
+	*Gets data from {header} object and creates elements to render to html
+    *Resulting html looks like this: 
+
+    	<div id="git-header">
+        	<a href={{ header.url }} target="_blank">
+            	<img class="avatar" src= {{ header.avatar_url }}>
+            </a>
+            <b class="git-header-title"> {{ header.title }} </b>
+        </div>
+
+
+ */
 function injectHeader(header){
     const gitHeader = document.getElementById("git-header");
 	
@@ -62,8 +86,9 @@ function injectHeader(header){
     
 	avatar_link.appendChild(avatar);
 
-    const title_tag = document.createElement("b");
+    const title_tag = document.createElement("span");
     title_tag.classList.add("git-header-title")
+    title_tag.classList.add("bold")
     const title = document.createTextNode(header.title);
     title_tag.appendChild(title);
     
@@ -72,6 +97,28 @@ function injectHeader(header){
 
 }
 
+/*
+	*Gets data from {header} object and creates elements to render to html
+    *Resulting html looks like this: 
+	
+        <div class="repo-content">
+        	<p class="repo-header">{{ repo.title }}</p>
+            <p> {{ repo.description }} </p>
+            <div class="lowest-div">
+            	<p class="lowest-tag"> {{repo.language}} </p>
+                <a href= {{ repo.url }} target="_blank">
+                	<p class="lowest-tag arrow-link">View Code→</p>
+                </a>
+
+                <!-- Only rendered if repo has a web url-->
+                <a href= {{ repo.web }} target="_blank">
+                	<p class="lowest-tag arrow-link">View Live→</p>
+                </a>
+
+            </div>
+        </div>
+
+ */
 function injectRepo(repo){
     const main = document.getElementById("repo-container");
 
@@ -143,5 +190,5 @@ function injectRepo(repo){
 
 }
 
-
+//Fire function
 getData();
