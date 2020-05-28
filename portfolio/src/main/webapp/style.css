@@ -1,5 +1,5 @@
 body{
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: Arial, Helvetica, "Helvetica Neue", sans-serif;
     cursor: default;
     width: 100%;
     margin: 0;
@@ -14,16 +14,14 @@ body{
 }
 
 a{
-    text-decoration: none;
+    text-decoration: inherit;
+    color: inherit;
 }
 
-p {
+.bold {
     font-size: 16px;
-    color: #6c757d;
-}
-
-b{
-    color: black;
+ 	color: black;
+    font-weight: bold;
 }
 
 .flex-nav-bar{
@@ -38,6 +36,7 @@ b{
 }
 .nav-item {
     margin-right: 20px;
+    text-decoration: none;
 }
 .nav-item:hover{
     font-weight: bold;
@@ -57,6 +56,7 @@ img {
   margin-top: 20px;
   width: 650px;
   text-align: center;
+  min-height: 90vh;
 
 }
 
@@ -96,6 +96,10 @@ img {
     margin: auto;
     padding: 10px;
     border-bottom: 1px solid black;
+}
+
+#git-content{
+    min-height: 85vh;
 }
 
 #git-header{
@@ -150,6 +154,5 @@ footer{
     text-align: center;
     border-top: 1px solid black;
     position: relative;
-    height: 40px;
     background-color: white;
 }
