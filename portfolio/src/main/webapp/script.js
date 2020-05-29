@@ -17,10 +17,9 @@
 
     *Description of functions below:
         *getData() asyncronously fetched data from github and calls functions to parse, filter and render component\
-        *SetHeader(repo) fetches and returns certain atributres from repo object
-        *SetRepos(repo) fetches and returns certain atributres from repo object
         *injectHeader(header) dynamically renders the header to the body
         *injectRepo(repo) creates a new repository elements and injects it into the body
+        *injectError() injects an error svg into the html file
 
 */
 
@@ -28,10 +27,25 @@ async function getData (){
     await fetch('https://api.github.com/users/MohamedShatry/repos')
             .then(data => data.json())
             .then(res => {
-                let varHeader = SetHeader(res[0].owner);
+                if(res.length === 0){
+                    next();
+                }
+                let repo = res[0].owner;
+                let varHeader = {
+                    title : repo.login,
+                    url: repo.html_url,
+                    avatar_url: repo.avatar_url
+                }
                 injectHeader(varHeader);
+                
                 res.forEach(repo => {
-                    var returnRepo = SetRepos(repo);
+                    var returnRepo = {
+                        title: repo.name,
+                        url: repo.html_url,
+                        language: repo.language,
+                        description: repo.description,
+                        web: repo.homepage
+                    }
                     injectRepo(returnRepo);
                 });
             })
@@ -39,29 +53,6 @@ async function getData (){
                 console.log("Error", err);
                 injectError();
             }); 
-}
-
-
-function SetHeader(repo){
-    var header = {
-        title : repo.login,
-        url: repo.html_url,
-        avatar_url: repo.avatar_url
-    }
-
-    return header;
-}
-
-function SetRepos(repo){
-    repo_content = {
-        title: repo.name,
-        url: repo.html_url,
-        language: repo.language,
-        description: repo.description,
-        web: repo.homepage
-    }
-
-    return repo_content;
 }
 
 /*
@@ -90,8 +81,8 @@ function injectHeader(header){
 	avatar_link.appendChild(avatar);
 
     const title_tag = document.createElement("span");
-    title_tag.classList.add("git-header-title")
-    title_tag.classList.add("bold")
+    title_tag.classList.add("git-header-title");
+    title_tag.classList.add("bold");
     const title = document.createTextNode(header.title);
     title_tag.appendChild(title);
     
@@ -127,11 +118,11 @@ function injectRepo(repo){
 
 	//Create container to hold content parsed in
     const repoContainer = document.createElement("div");
-    repoContainer.classList.add("repo-content")
+    repoContainer.classList.add("repo-content");
 	
     //Create Container heading
     const title_tag = document.createElement("p");
-    title_tag.classList.add("repo-header")
+    title_tag.classList.add("repo-header");
     const title = document.createTextNode(repo.title);
     title_tag.appendChild(title);
 	
