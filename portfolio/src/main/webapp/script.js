@@ -22,19 +22,23 @@
         *injectHeader(header) dynamically renders the header to the body
         *injectRepo(repo) creates a new repository elements and injects it into the body
 
-
- */
+*/
 
 async function getData (){
-    let response = await fetch('https://api.github.com/users/MohamedShatry/repos');
-    var resJSON = await response.json();
-    let varHeader = SetHeader(resJSON[0].owner);
-    injectHeader(varHeader);
-
-    resJSON.forEach(repo => {
-        var returnRepo = SetRepos(repo);
-        injectRepo(returnRepo);
-    });
+    await fetch('https://api.github.com/users/MohamedShatry/repos')
+            .then(data => data.json())
+            .then(res => {
+                let varHeader = SetHeader(res[0].owner);
+                injectHeader(varHeader);
+                res.forEach(repo => {
+                    var returnRepo = SetRepos(repo);
+                    injectRepo(returnRepo);
+                });
+            })
+            .catch(err => {
+                console.log("Error", err);
+                injectError();
+            }); 
 }
 
 
@@ -58,7 +62,7 @@ function SetRepos(repo){
     }
 
     return repo_content;
-};
+}
 
 /*
 	*Gets data from {header} object and creates elements to render to html
@@ -71,8 +75,7 @@ function SetRepos(repo){
             <b class="git-header-title"> {{ header.title }} </b>
         </div>
 
-
- */
+*/
 function injectHeader(header){
     const gitHeader = document.getElementById("git-header");
 	
@@ -98,7 +101,7 @@ function injectHeader(header){
 }
 
 /*
-	*Gets data from {header} object and creates elements to render to html
+	*Gets data from {repo} object and creates elements to render to html
     *Resulting html looks like this: 
 	
         <div class="repo-content">
@@ -118,7 +121,7 @@ function injectHeader(header){
             </div>
         </div>
 
- */
+*/
 function injectRepo(repo){
     const main = document.getElementById("repo-container");
 
@@ -172,11 +175,11 @@ function injectRepo(repo){
         web_link.target = "_blank";
 
         const web_tag = document.createElement("p");
-    	web_tag.classList.add("lowest-tag");
-    	web_tag.classList.add("arrow-link");
-    	
-    	const web_text = document.createTextNode("View Live→");
-    	web_tag.appendChild(web_text);
+        web_tag.classList.add("lowest-tag");
+        web_tag.classList.add("arrow-link");
+
+        const web_text = document.createTextNode("View Live→");
+        web_tag.appendChild(web_text);
         web_link.appendChild(web_tag);
         bottom_div.appendChild(web_link);
     }
@@ -187,6 +190,24 @@ function injectRepo(repo){
     repoContainer.appendChild(bottom_div);
 
     main.appendChild(repoContainer);
+
+}
+
+//Inject no data page if no data was returned;
+function injectError(){
+    const main = document.getElementById("repo-container");
+
+    const error = document.createElement("img");
+    error.classList.add("error");
+    error.src = "images/no_data.svg";
+
+    const error_tag = document.createElement("p");
+    error_tag.classList.add("error-tag");
+    const err_text = document.createTextNode("Ooops! Looks like we found nothing!");
+    error_tag.appendChild(err_text);
+
+    main.appendChild(error);
+    main.appendChild(error_tag);
 
 }
 
