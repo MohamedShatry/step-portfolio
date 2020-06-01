@@ -4,15 +4,30 @@
     <meta charset="UTF-8">
     <title>My Portfolio</title>
     <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
   </head>
-  <body>
-    <div id="content">
-      <h1>My Portfolio</h1>
-      <p>This is my portfolio.</p>
-      <p>Click here to get a random message:</p>
-      <button onclick="addRandomGreeting()">Hello</button>
-      <div id="greeting-container"></div>
+
+  <body class = "landing">
+    <!-- Navigation Bar -->
+    <div class = "flex-nav-bar">
+        <a href="index.html" > <p class="nav-item bold"> Home </p> </a>
+        <a href="projects.html" > <p class="nav-item"> Projects </p> </a>
+        <a href="https://github.com/MohamedShatry" target="_blank" > <p class="nav-item arrow-link"> Github&rarr; </p> </a>
     </div>
+
+    <!-- Main container -->
+    <div id="content">
+        <img src="/images/avataaars.svg">
+
+        <!-- Display box container-->
+        <div class = "description">
+            <p class="description-heading"> Hello there 👋 </p>
+            <p class="description-subheading"> My name is Mohamed Shatry, and welcome (&#128591) to my site </p>
+            <p>I am a student studying Computer Science and Statistics @Yale </p>
+            <p> I'm super interested in technology, finance, entreprenuership -- and their intersection </p>
+            <p>Feel free to look around(&#128064) through my <span class="arrow-link"><a href="projects.html">projects&rarr;</a> </span> </p>
+        </div>
+    
+    </div>
+    <footer> <p>This site was made by <a href="https://www.linkedin.com/in/mohamed-shatry-072aa2151" target="_blank">  Mohamed Shatry </a> </p> </footer>
   </body>
 </html>
