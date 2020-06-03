@@ -40,9 +40,28 @@ public class DataServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {  
         Gson gson = new Gson();
         String json = gson.toJson(comments);
-
+ 
         // Send the JSON as the response
         response.setContentType("application/json;");
         response.getWriter().println(json);
     }
+
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String commentText = request.getParameter("comment");
+        String userName = "Mohamed Shatry";
+        long timestamp = System.currentTimeMillis();
+ 
+        Entity commentEntity = new Entity("Comment");
+        commentEntity.setProperty("commentText", commentText);
+        commentEntity.setProperty("userName", userName);
+        commentEntity.setProperty("timestamp", timestamp);
+ 
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        datastore.put(commentEntity);
+ 
+        response.setStatus(HttpServletResponse.SC_CREATED);
+        response.sendRedirect("/comments.html");
+    }
+
 }
