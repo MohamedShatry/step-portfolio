@@ -9,21 +9,23 @@
   <body class = "landing" onload="callFetch()">
     <!-- Navigation Bar -->
     <div class = "flex-nav-bar">
-        <a href="index.html" > <p class="nav-item"> Home </p> </a>
-        <a href="projects.html" > <p class="nav-item"> Projects </p> </a>
-        <a href="comments.html" > <p class="nav-item bold"> Comments </p> </a>
-        <a href="https://github.com/MohamedShatry" target="_blank" > <p class="nav-item arrow-link"> Github&rarr; </p> </a>
+        <a href="index.html" ><p class="nav-item">Home</p></a>
+        <a href="projects.html" ><p class="nav-item">Projects</p></a>
+        <a href="comments.html" ><p class="nav-item bold">Comments</p></a>
+        <a href="https://github.com/MohamedShatry" target="_blank"><p class="nav-item arrow-link">Github&rarr;</p></a>
     </div>
 
     <!-- Main container -->
     <div id="content">
-        <form method="POST" action="/data">
-            <input type="text" name="comment" />
+        <form id = "commentForm">
+            <textarea name="comment" rows="5" cols="60" type="text" placeholder="insert your comment here"></textarea>
             <br/>
-            <button>Submit</button>
+            <button type="submit" onclick="callFetchPost()">Submit</button>
         </form>
+        <div class="separator">Comments</div>
+        <div id="comment-content"></div>
     </div>
-    <footer> <p>This site was made by <a href="https://www.linkedin.com/in/mohamed-shatry-072aa2151" target="_blank">  Mohamed Shatry </a> </p> </footer>
+    <footer><p>This site was made by <a href="https://www.linkedin.com/in/mohamed-shatry-072aa2151" target="_blank">Mohamed Shatry</a></p></footer>
   </body>
   <script src="comments-script.js"></script>
 </html>
