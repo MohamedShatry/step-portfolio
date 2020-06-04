@@ -38,11 +38,13 @@ public class DataServlet extends HttpServlet {
         String comment;
         String userName;
         long timestamp;
+        long id;
 
-        public CommentClass(String initComment, String initUserName, long initTimestamp){
+        public CommentClass(String initComment, String initUserName, long initTimestamp, long initId){
             comment = initComment;
             userName = initUserName;
             timestamp = initTimestamp;
+            id = initId;
         }
     }
 
@@ -62,7 +64,7 @@ public class DataServlet extends HttpServlet {
             String userName = (String) entity.getProperty("userName");
             long timestamp = (long) entity.getProperty("timestamp");
 
-            CommentClass commentInstance = new CommentClass(comment, userName, timestamp);
+            CommentClass commentInstance = new CommentClass(comment, userName, timestamp, id);
             comments.add(commentInstance);
         }
 
