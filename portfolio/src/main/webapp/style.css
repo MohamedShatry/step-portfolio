@@ -160,6 +160,19 @@ img {
     text-align: center;
 }
 
+#comment-container{
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    width: 650px;
+    min-height: 90vh;
+}
+
+.comment-bar{
+    border-top: 1px solid grey;
+    text-align: left;
+}
+
 footer{
     padding: 5px;
     text-align: center;
