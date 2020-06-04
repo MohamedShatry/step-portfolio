@@ -45,7 +45,7 @@ function createCommentElement(comment){
 
     commentContainer.appendChild(commentTag);
     commentContainer.appendChild(bottom_div);
-
+    
     main.appendChild(commentContainer);
 
 }
