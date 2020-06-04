@@ -1,12 +1,14 @@
 
 //Retrieve data from the server and create a comment Element for each response
-function callFetch(){
+function callFetch(value){
+    console.log(value);
     fetch("/data")
     .then(res => res.json())
     .then(res => {
         if(res.length === 0){
             next();
         }
+        document.getElementById("comment-content").innerHTML = "";
         res.forEach(comment => {
             createCommentElement(comment);
         })
@@ -59,7 +61,8 @@ function createCommentElement(comment){
 
     //Create delete button
     const deleteBtn = document.createElement("BUTTON");
-    deleteBtn.setAttribute("id", comment.id);
+    deleteBtn.onclick = deleteComment;
+    deleteBtn.setAttribute("id", comment.id.toString());
     deleteBtn.innerHTML = "Delete";
 
     bottom_div.appendChild(username_tag);
@@ -98,15 +101,23 @@ function getDateTimeFromTimestamp(unixTimeStamp) {
 //Add an event listener to the submit button that send the response as JSON to the server
 //Later, this will allow us to add data from cookies
 
-document.querySelector('form').addEventListener('submit', (e) => {
+document.getElementById("commentForm").addEventListener('submit', (e) => {
     e.preventDefault();
+    console.log("This function fired");
     const formData = new FormData(e.target);
+
+    if(formData.get("comment") === ''){
+        alert("Text area cannot be empty");
+        e.target.submit();
+    }
+
     data = {
         comment: formData.get("comment"),
         userName: "Mohamed Shatry",
         timestamp: 0,
         id: 0
     }
+
 
     fetch("/data", {
         method: 'POST',
@@ -115,30 +126,27 @@ document.querySelector('form').addEventListener('submit', (e) => {
         },
         body: JSON.stringify(data)
     })
-    .then(res => res.json())
     .then(res => {
         console.log("Got response");
         console.log(res);
     })
     .catch(err => console.error(err));
 
-    event.currentTarget.submit();
+    e.target.submit();
 });
 
-document.querySelector("button").addEventListener("click", (e) => {
-    e.preventDefault();
+function deleteComment() {
+    console.log(this.id);
     const reqID = this.id;
     const url = "/delete-data?id="+reqID;
     fetch(url, {
         method: 'POST',
     })
-    .then(res => res.json())
     .then(res => {
         console.log("Got response");
         console.log(res);
     })
     .catch(err => console.error(err));
-
-    location.reload();
-})
+    location.reload(true);
+}
 
