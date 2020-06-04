@@ -12,7 +12,7 @@ function callFetch(){
         })
     })
     .catch(err => {
-        console.err(err);
+        console.error(err);
         renderEmpty();
     });
 }
@@ -57,8 +57,14 @@ function createCommentElement(comment){
     const time = document.createTextNode(timeFormatted);
     time_tag.appendChild(time);
 
+    //Create delete button
+    const deleteBtn = document.createElement("BUTTON");
+    deleteBtn.setAttribute("id", comment.id);
+    deleteBtn.innerHTML = "Delete";
+
     bottom_div.appendChild(username_tag);
     bottom_div.appendChild(time_tag);
+    bottom_div.appendChild(deleteBtn);
 
     commentContainer.appendChild(commentTag);
     commentContainer.appendChild(bottom_div);
@@ -98,7 +104,8 @@ document.querySelector('form').addEventListener('submit', (e) => {
     data = {
         comment: formData.get("comment"),
         userName: "Mohamed Shatry",
-        timestamp: 0
+        timestamp: 0,
+        id: 0
     }
 
     fetch("/data", {
@@ -118,4 +125,20 @@ document.querySelector('form').addEventListener('submit', (e) => {
     event.currentTarget.submit();
 });
 
+document.querySelector("button").addEventListener("click", (e) => {
+    e.preventDefault();
+    const reqID = this.id;
+    const url = "/delete-data?id="+reqID;
+    fetch(url, {
+        method: 'POST',
+    })
+    .then(res => res.json())
+    .then(res => {
+        console.log("Got response");
+        console.log(res);
+    })
+    .catch(err => console.error(err));
+
+    location.reload();
+})
 
