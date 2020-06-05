@@ -20,6 +20,8 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,7 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import com.google.sps.servlets.Comment;
 
-/** Servlet that returns some example content. TODO: modify this file to handle comments data */
+/** Servlet that returns some example content.*/
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
@@ -60,7 +62,6 @@ public class DataServlet extends HttpServlet {
             i = i + 1;
         }
 
-
         Gson gson = new Gson();
         String json = gson.toJson(comments);
  
@@ -87,4 +88,11 @@ public class DataServlet extends HttpServlet {
         DatastoreServiceFactory.getDatastoreService().put(commentEntity);
     }
 
+    @Override
+    public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        long id = Long.parseLong(request.getParameter("id"));
+        Key commentEntityKey = KeyFactory.createKey("Comment", id);
+        DatastoreServiceFactory.getDatastoreService().delete(commentEntityKey);
+    }
 }
+
