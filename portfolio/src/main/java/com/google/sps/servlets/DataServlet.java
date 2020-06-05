@@ -34,13 +34,13 @@ import org.apache.commons.io.IOUtils;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-    public class CommentClass{
+    public class Comment{
         String comment;
         String userName;
         long timestamp;
         long id;
 
-        public CommentClass(String initComment, String initUserName, long initTimestamp, long initId){
+        public Comment(String initComment, String initUserName, long initTimestamp, long initId){
             comment = initComment;
             userName = initUserName;
             timestamp = initTimestamp;
@@ -50,29 +50,34 @@ public class DataServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {  
+        long reqNum = Long.parseLong(request.getParameter("num"));
         Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
 
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        PreparedQuery results = datastore.prepare(query);
+        PreparedQuery results = DatastoreServiceFactory.getDatastoreService().prepare(query);
 
-        List<CommentClass> comments = new ArrayList<>();
+        List<Comment> comments = new ArrayList<>();
 
+        int i = 0;
         for (Entity entity : results.asIterable()) {
-
+            if(i == reqNum){
+                break;
+            }
             long id = entity.getKey().getId();
-            String comment = (String) entity.getProperty("commentText");
+            String commentText = (String) entity.getProperty("commentText");
             String userName = (String) entity.getProperty("userName");
             long timestamp = (long) entity.getProperty("timestamp");
 
-            CommentClass commentInstance = new CommentClass(comment, userName, timestamp, id);
+            Comment commentInstance = new Comment(commentText, userName, timestamp, id);
             comments.add(commentInstance);
+
+            i = i + 1;
         }
 
 
         Gson gson = new Gson();
         String json = gson.toJson(comments);
  
-        // Send the JSON as the response
+        // Send the JSON as the response.
         response.setContentType("application/json;");
         response.getWriter().println(json);
     }
@@ -81,7 +86,7 @@ public class DataServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         
         String jsonString = IOUtils.toString(request.getInputStream());
-        CommentClass commentReq = new Gson().fromJson(jsonString, CommentClass.class);
+        Comment commentReq = new Gson().fromJson(jsonString, Comment.class);
 
         String commentText = commentReq.comment;
         String userName = commentReq.userName;
@@ -92,10 +97,8 @@ public class DataServlet extends HttpServlet {
         commentEntity.setProperty("userName", userName);
         commentEntity.setProperty("timestamp", timestamp);
  
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        datastore.put(commentEntity);
- 
-        response.setStatus(HttpServletResponse.SC_CREATED);
+        DatastoreServiceFactory.getDatastoreService().put(commentEntity);
+
     }
 
 }
