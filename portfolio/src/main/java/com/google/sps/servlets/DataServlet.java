@@ -30,23 +30,24 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 
+
+/** Comment class that will hold the comment entity*/
+public class Comment{
+    String comment;
+    String userName;
+    long timestamp;
+    long id;
+
+    public Comment(String initComment, String initUserName, long initTimestamp, long initId){
+        comment = initComment;
+        userName = initUserName;
+        timestamp = initTimestamp;
+        id = initId;
+    }
+}
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-
-    public class Comment{
-        String comment;
-        String userName;
-        long timestamp;
-        long id;
-
-        public Comment(String initComment, String initUserName, long initTimestamp, long initId){
-            comment = initComment;
-            userName = initUserName;
-            timestamp = initTimestamp;
-            id = initId;
-        }
-    }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {  
@@ -98,7 +99,6 @@ public class DataServlet extends HttpServlet {
         commentEntity.setProperty("timestamp", timestamp);
  
         DatastoreServiceFactory.getDatastoreService().put(commentEntity);
-
     }
 
 }
