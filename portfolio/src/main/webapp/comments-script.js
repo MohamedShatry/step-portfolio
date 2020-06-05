@@ -45,10 +45,6 @@ function createCommentElement(comment){
     const bottom_div = document.createElement("div");
     bottom_div.classList.add("lowest-div");
 
-    //Create bottom content.
-    const bottom_div = document.createElement("div");
-    bottom_div.classList.add("lowest-div");
-
     //Create container for the person.
     const username_tag = document.createElement("p");
     username_tag.classList.add("lowest-tag");
@@ -97,14 +93,12 @@ function renderEmpty(){
 
 
 //Add an event listener to the submit button that send the response as JSON to the server.
-document.getElementById("commentForm").addEventListener('submit', (e) => {
-    e.preventDefault();
-    console.log("This function fired");
-    const formData = new FormData(e.target);
+function submitForm() {
+    const formData = new FormData(document.getElementById("commentForm"));
 
     if(formData.get("comment") === ''){
         alert("Text area cannot be empty");
-        location.reload(true);
+        return;
     }
 
     data = {
@@ -124,14 +118,14 @@ document.getElementById("commentForm").addEventListener('submit', (e) => {
     .catch(err => console.error(err));
 
     event.currentTarget.submit();
-});
+}
 
 //This function allows users to delete the comments.
 function deleteComment() {
     const reqID = this.id;
     const url = "/data?id="+reqID;
     fetch(url, {
-        method: 'POST',
+        method: 'DELETE',
     })
     .catch(err => console.error(err));
     location.reload(true);
