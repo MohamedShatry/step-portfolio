@@ -129,7 +129,7 @@ document.getElementById("commentForm").addEventListener('submit', (e) => {
 //This function allows users to delete the comments.
 function deleteComment() {
     const reqID = this.id;
-    const url = "/delete-data?id="+reqID;
+    const url = "/data?id="+reqID;
     fetch(url, {
         method: 'POST',
     })
