@@ -11,15 +11,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** Servlet responsible for deleting tasks. */
-@WebServlet("/delete-task")
-public class DeleteTaskServlet extends HttpServlet {
+@WebServlet("/delete-data")
+public class DeleteDataServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     long id = Long.parseLong(request.getParameter("id"));
 
     Key commentEntityKey = KeyFactory.createKey("Comment", id);
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.delete(commentEntityKey);
+    DatastoreServiceFactory.getDatastoreService().delete(commentEntityKey);
   }
 }
