@@ -29,22 +29,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
+import com.google.sps.servlets.Comment;
 
-
-/** Comment class that will hold the comment entity*/
-public class Comment{
-    String comment;
-    String userName;
-    long timestamp;
-    long id;
-
-    public Comment(String initComment, String initUserName, long initTimestamp, long initId){
-        comment = initComment;
-        userName = initUserName;
-        timestamp = initTimestamp;
-        id = initId;
-    }
-}
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
