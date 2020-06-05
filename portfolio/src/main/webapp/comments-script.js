@@ -1,4 +1,3 @@
-
 //Retrieve data from the server and create a comment Element for each response.
 function callFetch(value){
     let url = "/data?num="+value.toString();
