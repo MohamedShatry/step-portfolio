@@ -1,8 +1,8 @@
 
-//Retrieve data from the server and create a comment Element for each response
+//Retrieve data from the server and create a comment Element for each response.
 function callFetch(value){
-    console.log(value);
-    fetch("/data")
+    let url = "/data?num="+value.toString();
+    fetch(url)
     .then(res => res.json())
     .then(res => {
         if(res.length === 0){
@@ -20,7 +20,7 @@ function callFetch(value){
 }
 
 /**
-This function creates a div from the comment object passed in
+This function creates a div from the comment object passed in.
 Resulting div will look like this:
     <div class="comment-bar">
         <p> {{ comment.comment }} </p>
@@ -37,29 +37,29 @@ function createCommentElement(comment){
     const commentContainer = document.createElement("div");
     commentContainer.classList.add("comment-bar");
 
-    //Create comment content
+    //Create comment content.
     const commentTag = document.createElement("p");
     const text = document.createTextNode(comment.comment);
     commentTag.appendChild(text);
 
-    //Create bottom content
+    //Create bottom content.
     const bottom_div = document.createElement("div");
     bottom_div.classList.add("lowest-div");
 
-    //Create container for the person
+    //Create container for the person.
     const username_tag = document.createElement("p");
     username_tag.classList.add("lowest-tag");
     const usercontent = document.createTextNode(comment.userName);
     username_tag.appendChild(usercontent);
 
-    //Create container for time tag
-    const timeFormatted = getDateTimeFromTimestamp(comment.timestamp);
+    //Create container for time tag.
+    const timeFormatted = new Date(comment.timestamp).toString().substring(0,21);
     const time_tag = document.createElement("p");
     time_tag.classList.add("lowest-tag");
     const time = document.createTextNode(timeFormatted);
     time_tag.appendChild(time);
 
-    //Create delete button
+    //Create delete button.
     const deleteBtn = document.createElement("BUTTON");
     deleteBtn.onclick = deleteComment;
     deleteBtn.setAttribute("id", comment.id.toString());
@@ -75,7 +75,7 @@ function createCommentElement(comment){
     main.appendChild(commentContainer);
 }
 
-//This function renders an svg to the html to show no data
+//This function renders an svg to the html to show no data.
 function renderEmpty(){
     const main = document.getElementById("comment-content");
 
@@ -92,14 +92,7 @@ function renderEmpty(){
     main.appendChild(error_tag);
 }
 
-//This function converts the unix timestamp to date and time format
-function getDateTimeFromTimestamp(unixTimeStamp) {
-    var date = new Date(unixTimeStamp);
-    return ('0' + date.getDate()).slice(-2) + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + date.getFullYear() + ' ' + ('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2);
-}
-
-//Add an event listener to the submit button that send the response as JSON to the server
-//Later, this will allow us to add data from cookies
+//Add an event listener to the submit button that send the response as JSON to the server.
 
 document.getElementById("commentForm").addEventListener('submit', (e) => {
     e.preventDefault();
@@ -108,7 +101,7 @@ document.getElementById("commentForm").addEventListener('submit', (e) => {
 
     if(formData.get("comment") === ''){
         alert("Text area cannot be empty");
-        e.target.submit();
+        location.reload(true);
     }
 
     data = {
@@ -126,25 +119,17 @@ document.getElementById("commentForm").addEventListener('submit', (e) => {
         },
         body: JSON.stringify(data)
     })
-    .then(res => {
-        console.log("Got response");
-        console.log(res);
-    })
     .catch(err => console.error(err));
 
     e.target.submit();
 });
 
+//This function allows users to delete the comments.
 function deleteComment() {
-    console.log(this.id);
     const reqID = this.id;
     const url = "/delete-data?id="+reqID;
     fetch(url, {
         method: 'POST',
-    })
-    .then(res => {
-        console.log("Got response");
-        console.log(res);
     })
     .catch(err => console.error(err));
     location.reload(true);
