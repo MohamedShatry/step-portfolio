@@ -53,10 +53,10 @@ public class DataServlet extends HttpServlet {
             }
             long id = entity.getKey().getId();
             String commentText = (String) entity.getProperty("commentText");
-            String userName = (String) entity.getProperty("userName");
+            String email = (String) entity.getProperty("email");
             long timestamp = (long) entity.getProperty("timestamp");
 
-            Comment commentInstance = new Comment(commentText, userName, timestamp, id);
+            Comment commentInstance = new Comment(commentText, email, timestamp, id);
             comments.add(commentInstance);
 
             i = i + 1;
@@ -77,12 +77,12 @@ public class DataServlet extends HttpServlet {
         Comment commentReq = new Gson().fromJson(jsonString, Comment.class);
 
         String commentText = commentReq.comment;
-        String userName = commentReq.userName;
+        String email = commentReq.email;
         long timestamp = System.currentTimeMillis();
  
         Entity commentEntity = new Entity("Comment");
         commentEntity.setProperty("commentText", commentText);
-        commentEntity.setProperty("userName", userName);
+        commentEntity.setProperty("email", email);
         commentEntity.setProperty("timestamp", timestamp);
  
         DatastoreServiceFactory.getDatastoreService().put(commentEntity);
