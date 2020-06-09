@@ -18,6 +18,28 @@ a{
     color: inherit;
 }
 
+button, .btn{
+  display: inline-block;
+  text-align: center;
+  text-decoration: none;
+  margin: 2px 0;
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 0.5em 1em;
+}
+
+.btn-blue{
+    color: #ffffff; 
+    background-color: #1183ca;
+    border: solid 1px transparent;
+}
+.btn-white{
+    color: #1183ca;
+    background-color: #ffffff;
+    border: solid 1px #1183ca;
+}
+
+
 .bold {
     font-size: 16px;
  	color: black;
@@ -171,6 +193,19 @@ img {
 .comment-bar{
     border-top: 1px solid grey;
     text-align: left;
+}
+.subheading{
+    display: flex;
+    align-items: baseline;
+    margin: 20px 0px;
+}
+
+.comments-separator{
+    font-size: 24px;
+    font-weight: bold;
+}
+.labeltag{
+    margin-left: 50px;
 }
 
 footer{
