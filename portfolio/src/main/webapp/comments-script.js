@@ -1,29 +1,21 @@
-
 var credentials = {};
 
-function initiateFunctions(){
+function init(){
     fetch("/auth")
     .then(res => res.json())
     .then(res => {
         credentials = res;
-        if(res.loggedIn === true){
-            document.getElementById("commentForm").style.visibility = "visible";
-            document.getElementById("loginRoute").innerHTML = "Logout";
-            document.getElementById("loginRoute").setAttribute("href", res.logoutUrl);
-        }else{
-            document.getElementById("commentForm").style.visibility = "hidden";
-            document.getElementById("loginRoute").innerHTML = "Login";
-            document.getElementById("loginRoute").setAttribute("href", res.loginUrl);
-        }
-        callFetch(10);
+        document.getElementById("loginRoute").innerHTML = res.loggedIn ? "Logout" : "Login";
+        document.getElementById("loginRoute").setAttribute("href", res.loggedIn ? res.logoutUrl : res.loginUrl);
+        loadComments(10);
     })
     .catch(err => console.error(err));
 }
 
-
 //Retrieve data from the server and create a comment Element for each response.
-function callFetch(value){
-    let url = "/data?num="+value.toString();
+function loadComments(commentsNum){
+    document.getElementById("commentForm").style.visibility = credentials.loggedIn ? "visible" : "hidden";
+    let url = "/data?num="+commentsNum.toString();
     fetch(url)
     .then(res => res.json())
     .then(res => {
