@@ -41,9 +41,9 @@ public class AuthServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {  
-        String email = "null";
-        String loginUrl = "null";
-        String logoutUrl = "null";
+        String email = "";
+        String loginUrl = "";
+        String logoutUrl = "";
         boolean loggedIn = false; 
         
         UserService userService = UserServiceFactory.getUserService();

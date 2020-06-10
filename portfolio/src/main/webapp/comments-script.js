@@ -1,6 +1,21 @@
+var credentials = {};
+
+function init(){
+    fetch("/auth")
+    .then(res => res.json())
+    .then(res => {
+        credentials = res;
+        document.getElementById("loginRoute").innerHTML = res.loggedIn ? "Logout" : "Login";
+        document.getElementById("loginRoute").setAttribute("href", res.loggedIn ? res.logoutUrl : res.loginUrl);
+        loadComments(10);
+    })
+    .catch(err => console.error(err));
+}
+
 //Retrieve data from the server and create a comment Element for each response.
-function callFetch(value){
-    let url = "/data?num="+value.toString();
+function loadComments(commentsNum){
+    document.getElementById("commentForm").style.visibility = credentials.loggedIn ? "visible" : "hidden";
+    let url = "/data?num="+commentsNum.toString();
     fetch(url)
     .then(res => res.json())
     .then(res => {
@@ -48,7 +63,7 @@ function createCommentElement(comment){
     //Create container for the person.
     const username_tag = document.createElement("p");
     username_tag.classList.add("lowest-tag");
-    const usercontent = document.createTextNode(comment.userName);
+    const usercontent = document.createTextNode(comment.email);
     username_tag.appendChild(usercontent);
 
     //Create container for time tag.
@@ -57,16 +72,19 @@ function createCommentElement(comment){
     time_tag.classList.add("lowest-tag");
     const time = document.createTextNode(timeFormatted);
     time_tag.appendChild(time);
-
-    //Create delete button.
-    const deleteBtn = document.createElement("BUTTON");
-    deleteBtn.onclick = deleteComment;
-    deleteBtn.setAttribute("id", comment.id.toString());
-    deleteBtn.innerHTML = "Delete";
-
+    
     bottom_div.appendChild(username_tag);
     bottom_div.appendChild(time_tag);
-    bottom_div.appendChild(deleteBtn);
+
+    //Create delete button.
+    if(credentials.email === comment.email){
+        const deleteBtn = document.createElement("BUTTON");
+        deleteBtn.onclick = deleteComment;
+        deleteBtn.setAttribute("id", comment.id.toString());
+        deleteBtn.setAttribute("class", "btn btn-blue");
+        deleteBtn.innerHTML = "Delete";
+        bottom_div.appendChild(deleteBtn);
+    }
 
     commentContainer.appendChild(commentTag);
     commentContainer.appendChild(bottom_div);
@@ -103,7 +121,7 @@ function submitForm() {
 
     data = {
         comment: formData.get("comment"),
-        userName: "Mohamed Shatry",
+        email: credentials.email,
         timestamp: 0,
         id: 0
     }

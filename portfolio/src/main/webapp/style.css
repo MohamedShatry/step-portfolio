@@ -5,6 +5,7 @@ body{
     margin: 0;
     padding: 0;
 }
+
 .landing{
     background-image: url("/images/background.svg");
     background-repeat: no-repeat;
@@ -18,9 +19,31 @@ a{
     color: inherit;
 }
 
-.bold {
+.btn,button{
+  display: inline-block;
+  text-align: center;
+  text-decoration: none;
+  margin: 2px 0;
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 0.5em 1em;
+}
+
+.btn-blue{
+    color: #ffffff; 
+    background-color: #1183ca;
+    border: solid 1px transparent;
+}
+
+.btn-white{
+    color: #1183ca;
+    background-color: #ffffff;
+    border: solid 1px #1183ca;
+}
+
+.bold{
     font-size: 16px;
- 	color: black;
+    color: black;
     font-weight: bold;
 }
 
@@ -34,14 +57,17 @@ a{
     background-color: white;
     margin-top: 0;
 }
+
 .nav-item {
     margin-right: 20px;
     text-decoration: none;
 }
+
 .nav-item:hover{
     font-weight: bold;
     color: black;
 }
+
 .nav-item:last-child{
     margin-right: 70px;
 }
@@ -50,6 +76,7 @@ img {
     width: 200px;
     height: 200px;
 }
+
 #content {
     margin-left: auto;
     margin-right: auto;
@@ -69,6 +96,7 @@ img {
     border-radius: 5px;
     background-color: white;
 }
+
 .description-heading{
     font-size: 24px;
     font-weight: bolder;
@@ -81,7 +109,6 @@ img {
 	color: black;
 }
 
-
 #greeting-container {
     margin-top: 20px;
 }
@@ -90,6 +117,7 @@ img {
     text-decoration: underline;
     cursor: pointer;
 }
+
 .separator{
     width: 900px;
     margin: auto;
@@ -108,16 +136,19 @@ img {
     width: 900px;
     margin: 20px auto;
 }
+
 .avatar {
     width: 100px;
     height: 100px;
     margin-right: 20px;
 }
+
 .git-header-title {
     font-size: 1.5em;
     font-weight: bold;
     margin: 5px;
 }
+
 #repo-container{
     display: flex;
     flex-wrap: wrap;
@@ -142,11 +173,13 @@ img {
     display: flex;
     align-content: flex-end;
 }
+
 .lowest-tag{
     color: black;
     font-size: 12px;
     margin-right: 50px;
 }
+
 .error{
     width: 500px;
     height: 500px;
@@ -171,6 +204,21 @@ img {
 .comment-bar{
     border-top: 1px solid grey;
     text-align: left;
+}
+
+.subheading{
+    display: flex;
+    align-items: baseline;
+    margin: 20px 0px;
+}
+
+.comments-separator{
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.labeltag{
+    margin-left: 50px;
 }
 
 footer{
