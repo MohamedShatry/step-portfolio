@@ -7,15 +7,18 @@ function init(){
         credentials = res;
         document.getElementById("loginRoute").innerHTML = res.loggedIn ? "Logout" : "Login";
         document.getElementById("loginRoute").setAttribute("href", res.loggedIn ? res.logoutUrl : res.loginUrl);
-        loadComments(10);
+        loadComments();
     })
     .catch(err => console.error(err));
 }
 
 //Retrieve data from the server and create a comment Element for each response.
-function loadComments(commentsNum){
+function loadComments(){
     document.getElementById("commentForm").style.visibility = credentials.loggedIn ? "visible" : "hidden";
-    let url = "/data?num="+commentsNum.toString();
+    const reqNum = document.getElementById("quantity").value;
+    const reqLanguage = document.getElementById("language").value;
+
+    let url = "/data?num="+reqNum+"&lang="+reqLanguage;
     fetch(url)
     .then(res => res.json())
     .then(res => {

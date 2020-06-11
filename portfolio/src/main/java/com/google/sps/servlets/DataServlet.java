@@ -22,6 +22,9 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.cloud.translate.Translate;
+import com.google.cloud.translate.TranslateOptions;
+import com.google.cloud.translate.Translation;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,9 +43,11 @@ public class DataServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {  
         long reqNum = Long.parseLong(request.getParameter("num"));
+        String reqLang = request.getParameter("lang");
         Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
 
         PreparedQuery results = DatastoreServiceFactory.getDatastoreService().prepare(query);
+        Translate translate = TranslateOptions.getDefaultInstance().getService();
 
         List<Comment> comments = new ArrayList<>();
 
@@ -56,7 +61,10 @@ public class DataServlet extends HttpServlet {
             String email = (String) entity.getProperty("email");
             long timestamp = (long) entity.getProperty("timestamp");
 
-            Comment commentInstance = new Comment(commentText, email, timestamp, id);
+            Translation translation = translate.translate(commentText, Translate.TranslateOption.targetLanguage(reqLang));
+            String translatedText = translation.getTranslatedText();
+
+            Comment commentInstance = new Comment(translatedText, email, timestamp, id);
             comments.add(commentInstance);
 
             i = i + 1;
@@ -66,6 +74,7 @@ public class DataServlet extends HttpServlet {
         String json = gson.toJson(comments);
  
         // Send the JSON as the response.
+        response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;");
         response.getWriter().println(json);
     }
