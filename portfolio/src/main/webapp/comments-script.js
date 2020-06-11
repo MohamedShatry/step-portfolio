@@ -18,15 +18,10 @@ function loadComments(){
     const reqNum = document.getElementById("quantity").value;
     const reqLanguage = document.getElementById("language").value;
 
-    const params = new URLSearchParams();
-    params.append('num', reqNum);
-    // params.append('languageCode', reqLanguage);
-
     let url = "/data?num="+reqNum+"&lang="+reqLanguage;
     fetch(url)
     .then(res => res.json())
     .then(res => {
-        console.log(res);
         if(res.length === 0){
             next();
         }
