@@ -25,7 +25,6 @@ public final class FindMeetingQuery {
   public final List<TimeRange> bookedTimes = new ArrayList<>();
 
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
-    // throw new UnsupportedOperationException("TODO: Implement this method.");
 
     if(request.getDuration() >= TimeRange.WHOLE_DAY.duration()){
         return slots;
@@ -46,10 +45,10 @@ public final class FindMeetingQuery {
             return slots;
         }
 
-        //Sort
+        //Sort the booked times by start of day
         Collections.sort(bookedTimes, TimeRange.ORDER_BY_START);
 
-        //Merge
+        //Merge overlapping or nested timeslots into a single chunk of time
         for (int i = 0; i < bookedTimes.size() - 1; i++){
             if(bookedTimes.get(i).overlaps(bookedTimes.get(i+1)) || bookedTimes.get(i).contains(bookedTimes.get(i+1))){
                 if(bookedTimes.get(i).end() > bookedTimes.get(i+1).end()){
@@ -61,7 +60,7 @@ public final class FindMeetingQuery {
             }
         }
 
-        //Get everthing in between
+        //Get everthing in between the booked time slots as eligible slots for the request
         long duration = request.getDuration();
         
         if((bookedTimes.get(0).start() - TimeRange.START_OF_DAY) >= duration){
