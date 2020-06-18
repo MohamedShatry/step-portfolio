@@ -49,14 +49,14 @@ public final class FindMeetingQuery {
         Collections.sort(bookedTimes, TimeRange.ORDER_BY_START);
 
         //Merge overlapping or nested timeslots into a single chunk of time
-        for (int i = 0; i < bookedTimes.size() - 1; i++){
+        int i = 0;
+        while(i < bookedTimes.size() - 1){
             if(bookedTimes.get(i).overlaps(bookedTimes.get(i+1)) || bookedTimes.get(i).contains(bookedTimes.get(i+1))){
-                if(bookedTimes.get(i).end() > bookedTimes.get(i+1).end()){
-                    bookedTimes.set(i, TimeRange.fromStartEnd(bookedTimes.get(i).start(), bookedTimes.get(i).end(), false));
-                }else{
-                    bookedTimes.set(i, TimeRange.fromStartEnd(bookedTimes.get(i).start(), bookedTimes.get(i+1).end(), false));
-                }
+                int endTime = Math.max(bookedTimes.get(i).end(), bookedTimes.get(i+1).end());
+                bookedTimes.set(i, TimeRange.fromStartEnd(bookedTimes.get(i).start(), endTime, false));
                 bookedTimes.remove(i+1);
+            }else{
+                i++;
             }
         }
 
@@ -67,7 +67,7 @@ public final class FindMeetingQuery {
             slots.add(TimeRange.fromStartEnd(TimeRange.START_OF_DAY, bookedTimes.get(0).start(), false));
         }
 
-        for(int i = 0; i < bookedTimes.size() - 1; i++){
+        for(i = 0; i < bookedTimes.size() - 1; i++){
             if((bookedTimes.get(i+1).start() - bookedTimes.get(i).end()) >= duration){
                 slots.add(TimeRange.fromStartEnd(bookedTimes.get(i).end(), bookedTimes.get(i+1).start(), false));
             }
