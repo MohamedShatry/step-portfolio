@@ -41,9 +41,9 @@ public final class FindMeetingQuery {
                 }
             }
         }
-        List<TimeRange> availableTimes = getAvailableSlots(bookedTimes, request.getDuration());
+        List<TimeRange> mandatoryTimes = getAvailableSlots(bookedTimes, request.getDuration());
  
-        //Get blocked and available times for optional people
+        // Get blocked and available times for optional people
         for(Event event: events){
             for(String attendee: request.getOptionalAttendees()){
                 if(event.getAttendees().contains(attendee)){
@@ -52,32 +52,47 @@ public final class FindMeetingQuery {
                 }
             }
         }
-        List<TimeRange> availableOptionalTimes = getAvailableSlots(bookedOptionalTimes, request.getDuration());
+        List<TimeRange> optionalTimes = getAvailableSlots(bookedOptionalTimes, request.getDuration());
 
         // If no required attendee is available, then return no time slot available.
-        if(availableTimes.size() == 0){
-            return slots;
-        }
- 
-        // Compare the timeslots available for required attendees and optional attendees and return the intersection.
-        for(int i = 0; i < availableTimes.size(); i++){
-            for(int j = 0; j < availableOptionalTimes.size(); j++){
-                if(availableTimes.get(i).end() < availableOptionalTimes.get(j).start()){
-                    break;
-                }
-                else if(availableTimes.get(i).equals(availableOptionalTimes.get(j))){
-                    slots.add(TimeRange.fromStartEnd(availableOptionalTimes.get(i).start(), availableOptionalTimes.get(i).end(),false)); 
-                }else if(availableTimes.get(i).contains(availableOptionalTimes.get(j))){
-                    slots.add(TimeRange.fromStartEnd(availableOptionalTimes.get(j).start(), availableOptionalTimes.get(j).end(),false));
-                }else if(availableOptionalTimes.get(j).contains(availableTimes.get(i))){
-                    slots.add(TimeRange.fromStartEnd(availableTimes.get(i).start(), availableTimes.get(i).end(),false));
-                }
+        if (optionalTimes.size() == 0){
+            if(mandatoryTimes.get(0) == TimeRange.WHOLE_DAY){
+                return slots;
+            }else{
+                return mandatoryTimes;
             }
         }
 
+        int i = 0;
+        int j = 0;
+
+        while((i < mandatoryTimes.size()) && (j < optionalTimes.size())){
+            if(mandatoryTimes.get(i).overlaps(optionalTimes.get(j))){
+
+                if(mandatoryTimes.get(i).contains(optionalTimes.get(j))){
+                    slots.add(TimeRange.fromStartEnd(optionalTimes.get(j).start(), optionalTimes.get(j).end(),false));
+                    j++;
+                }else if(optionalTimes.get(j).contains(mandatoryTimes.get(i))){
+                    slots.add(TimeRange.fromStartEnd(mandatoryTimes.get(i).start(), mandatoryTimes.get(i).end(),false));
+                    i++;
+                }else if(mandatoryTimes.get(i).end() < optionalTimes.get(j).end()){
+                    i++;
+                }else{
+                    j++;
+                }
+
+            }else{
+                if(mandatoryTimes.get(i).end() < optionalTimes.get(j).end()){
+                    i++;
+                }else{
+                    j++;
+                }
+            }
+        }
+ 
         // If no available overlap is available, return the available times for required attendees.
-        if(slots.size() == 0 && availableOptionalTimes.size() != 0){
-            return availableTimes;
+        if(slots.size() == 0 && optionalTimes.size() != 0){
+            return mandatoryTimes;
         }
 
     }
@@ -94,13 +109,13 @@ public final class FindMeetingQuery {
         return returnSlots;
     }
  
-    //Sort the booked times by start of day
+    // Sort the booked times by start of day
     Collections.sort(timesArray, TimeRange.ORDER_BY_START);
  
-    //Merge overlapping or nested timeslots into a single chunk of time
+    // Merge overlapping or nested timeslots into a single chunk of time
     int i = 0;
     while(i < timesArray.size()-1){
-        if(timesArray.get(i).overlaps(timesArray.get(i+1)) || timesArray.get(i).contains(timesArray.get(i+1))){
+        if(timesArray.get(i).overlaps(timesArray.get(i+1))){
             int endTime = Math.max(timesArray.get(i).end(), timesArray.get(i+1).end());
             timesArray.set(i, TimeRange.fromStartEnd(timesArray.get(i).start(), endTime, false));
             timesArray.remove(i+1); 
@@ -109,19 +124,21 @@ public final class FindMeetingQuery {
         }
     }
  
-    //Get everthing in between the booked time slots as eligible slots for the request.
-    if((timesArray.get(0).start() - TimeRange.START_OF_DAY) >= duration){
-        returnSlots.add(TimeRange.fromStartEnd(TimeRange.START_OF_DAY, timesArray.get(0).start(), false));
-    }
- 
+    // Get everthing in between the booked time slots as eligible slots for the request.
+    returnSlots.add(TimeRange.fromStartEnd(TimeRange.START_OF_DAY, timesArray.get(0).start(), false));
     for(i = 0; i < timesArray.size() - 1; i++){
-        if((timesArray.get(i+1).start() - timesArray.get(i).end()) >= duration){
-            returnSlots.add(TimeRange.fromStartEnd(timesArray.get(i).end(), timesArray.get(i+1).start(), false));
-        }
+        returnSlots.add(TimeRange.fromStartEnd(timesArray.get(i).end(), timesArray.get(i+1).start(), false));     
     }
- 
-    if((TimeRange.END_OF_DAY - timesArray.get(timesArray.size() - 1).end()) >= duration){
-        returnSlots.add(TimeRange.fromStartEnd(timesArray.get(timesArray.size() - 1).end(), TimeRange.END_OF_DAY, true));
+    returnSlots.add(TimeRange.fromStartEnd(timesArray.get(timesArray.size() - 1).end(), TimeRange.END_OF_DAY, true));
+    
+    // Filter to remove timeslots that are less than duration requested
+    i = 0;
+    while(i < returnSlots.size()){
+        if(returnSlots.get(i).duration() < duration){
+            returnSlots.remove(i);
+        }else{
+            i++;
+        }
     }
  
     return returnSlots;
